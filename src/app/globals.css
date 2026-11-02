@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --color-midnight-base: #071326;
+  --color-midnight-surface: #0b1c36;
+  --color-midnight-card: #102447;
+  --color-midnight-border: #162b4c;
+  --color-midnight-subtle: #1c355e;
+
+  --color-gold-antique: #c5a059;
+  --color-gold-light: #e5c378;
+  --color-gold-deep: #8c6d3b;
+  --color-gold-glow: rgba(197, 160, 89, 0.18);
+  --color-gold-border: rgba(197, 160, 89, 0.3);
+
+  --color-ivory-base: #faf7f2;
+  --color-ivory-warm: #f3ece2;
+  --color-sand-muted: #e8ded1;
+
+  --color-jewel-burgundy: #7a1c28;
+  --color-jewel-cobalt: #1b3b6f;
+  --color-jewel-plum: #46224a;
+  --color-jewel-teal: #0d4e56;
+
+  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
+  --font-sans: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root {
+  --bg-primary: #071326;
+  --bg-surface: #0b1c36;
+  --text-primary: #ffffff;
+  --text-muted: #d4c9ba;
+  --gold: #c5a059;
+}
+
+/* Hero Section Preserved: Keeps exact Cormorant Garamond and Plus Jakarta Sans */
+.hero-font-preserved,
+section:has(h1),
+main > section:first-of-type {
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-sans: var(--font-jakarta), 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+body {
+  background-color: #071326;
+  color: #faf7f2;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar for Luxury Editorial Look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #071326;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(197, 160, 89, 0.35);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(197, 160, 89, 0.6);
+}
+
+/* Smooth Luxury Transitions */
+* {
+  border-color: rgba(197, 160, 89, 0.15);
+}
+
+/* Hide scrollbar for clean carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Soft gold glow utilities */
+.glow-gold-sm {
+  box-shadow: 0 0 15px rgba(197, 160, 89, 0.15);
+}
+.glow-gold-md {
+  box-shadow: 0 0 30px rgba(197, 160, 89, 0.22);
+}
+
+/* Hairline gold dividers */
+.gold-divider-h {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(197, 160, 89, 0.3), transparent);
+}

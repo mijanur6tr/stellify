@@ -1,0 +1,205 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrderStatus {
+  PLACED
+  CONFIRMED
+  PACKED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Collection {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String
+  story       String?   @db.Text
+  coverImage  String
+  isFeatured  Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([isFeatured])
+}
+
+model Product {
+  id               String         @id @default(cuid())
+  name             String
+  slug             String         @unique
+  shortDescription String
+  description      String         @db.Text
+  price            Decimal        @db.Decimal(10, 2)
+  compareAtPrice   Decimal?       @db.Decimal(10, 2)
+  stock            Int            @default(10)
+  sku              String         @unique
+  isFeatured       Boolean        @default(false)
+  isPublished      Boolean        @default(true)
+  materials        String[]       @default([])
+  occasion         String         @default("Casual & Festive")
+  colours          String[]       @default([])
+  tags             String[]       @default([])
+  collectionId     String
+  collection       Collection     @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  images           ProductImage[]
+  cartItems        CartItem[]
+  favourites       Favourite[]
+  orderItems       OrderItem[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([slug])
+  @@index([collectionId])
+  @@index([isPublished, isFeatured])
+  @@index([price])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  publicId  String?
+  altText   String
+  sortOrder Int      @default(0)
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([productId, sortOrder])
+}
+
+model GuestSession {
+  id         String      @id @default(cuid())
+  token      String      @unique
+  cartItems  CartItem[]
+  favourites Favourite[]
+  orders     Order[]
+  createdAt  DateTime    @default(now())
+  expiresAt  DateTime
+
+  @@index([token])
+}
+
+model CartItem {
+  id             String       @id @default(cuid())
+  guestSessionId String
+  guestSession   GuestSession @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity       Int          @default(1)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([guestSessionId, productId])
+  @@index([guestSessionId])
+}
+
+model Favourite {
+  id             String       @id @default(cuid())
+  guestSessionId String
+  guestSession   GuestSession @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([guestSessionId, productId])
+  @@index([guestSessionId])
+}
+
+model Order {
+  id             String               @id @default(cuid())
+  orderNumber    String               @unique // e.g., STL-2026-1001
+  guestSessionId String?
+  guestSession   GuestSession?        @relation(fields: [guestSessionId], references: [id], onDelete: SetNull)
+  customerName   String
+  customerPhone  String
+  customerEmail  String?
+  fullAddress    String               @db.Text
+  district       String               // Dhaka or Outside Dhaka
+  notes          String?              @db.Text
+  subtotal       Decimal              @db.Decimal(10, 2)
+  deliveryCharge Decimal              @db.Decimal(10, 2)
+  totalAmount    Decimal              @db.Decimal(10, 2)
+  paymentMethod  String               @default("CASH_ON_DELIVERY")
+  status         OrderStatus          @default(PLACED)
+  internalNotes  String?              @db.Text
+  items          OrderItem[]
+  statusHistory  OrderStatusHistory[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([orderNumber])
+  @@index([customerPhone])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId     String?
+  product       Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productName   String
+  unitPrice     Decimal  @db.Decimal(10, 2)
+  quantity      Int
+  totalPrice    Decimal  @db.Decimal(10, 2)
+  selectedColor String?
+  imageSnapshot String?
+
+  @@index([orderId])
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(cuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    OrderStatus
+  note      String?
+  createdAt DateTime    @default(now())
+
+  @@index([orderId, createdAt])
+}
+
+model KnowledgeDoc {
+  id          String   @id @default(cuid())
+  title       String
+  category    String   // FAQ, POLICY, BRAND_STORY, CRAFT, SIZING
+  content     String   @db.Text
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+}
+
+model EmbeddingChunk {
+  id         String   @id @default(cuid())
+  entityType String   // PRODUCT, COLLECTION, KNOWLEDGE_DOC
+  entityId   String
+  title      String
+  chunkText  String   @db.Text
+  metadata   Json
+  // Note: pgvector vector(768) raw column added via migration
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([entityType, entityId])
+}

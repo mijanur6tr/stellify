@@ -1,0 +1,19 @@
+<svg width="400" height="180" viewBox="0 0 400 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Monogram centered at x=200, y=55 -->
+  <g transform="translate(160, 10) scale(0.4)">
+    <g stroke="#C5A059" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 60 40 C 95 40 100 70 100 100 C 70 100 40 95 40 60 C 40 48 48 40 60 40 Z" />
+      <path d="M 140 40 C 152 40 160 48 160 60 C 160 95 130 100 100 100 C 100 70 105 40 140 40 Z" />
+      <path d="M 160 140 C 160 152 152 160 140 160 C 105 160 100 130 100 100 C 130 100 160 105 160 140 Z" />
+      <path d="M 40 140 C 40 105 70 100 100 100 C 100 130 95 160 60 160 C 48 160 40 152 40 140 Z" />
+    </g>
+    <path d="M 100 88 Q 100 100 88 100 Q 100 100 100 112 Q 100 100 112 100 Q 100 100 100 88 Z" fill="#C5A059" />
+  </g>
+  <!-- STELLIFY Wordmark -->
+  <text x="200" y="145" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="34" font-weight="400" letter-spacing="0.32em" fill="#C5A059">
+    STELLIFY
+  </text>
+  <text x="200" y="168" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="400" letter-spacing="0.35em" fill="#FAF7F2" opacity="0.75">
+    HANDCRAFTED WITH SOUL
+  </text>
+</svg>
